@@ -16,11 +16,12 @@ h1, h3 {
   -moz-perspective:800;
 }
 .theCard {
+	color:white;
   width:100%;
   height:100%;
   position:absolute;
   -webkit-transition: -webkit-transform 1s;
-  transition: transform 1s;
+  transition: all 1.0s linear;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
 }
@@ -37,7 +38,7 @@ figure {
 }
 .theCardFront,
 .theCardBack{
-  background-color:#96CDCD;
+  background-color:#3367D6;
   border-radius:5px;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   margin:0 auto;
@@ -45,6 +46,7 @@ figure {
   padding:15px;
 }
 .theCardBack {
+	z-index:3;
   -webkit-transform: rotateY(180deg);
   transform:rotateY(180deg);
 }
@@ -79,8 +81,8 @@ small {
 .signIn,
 .pay{
   display:inline-block;
-  background-color:#5F9F9F;
-  color:#fff;
+  background-color:#f5f7fb;
+  color:#e09999;
   text-decoration:none;
   padding:5px 10px;
   border:none;
@@ -91,7 +93,7 @@ small {
 }
 .signIn:hover,
 .pay:hover{
-  background-color:#528b8b;
+  background-color:#fbf8c0;
   cursor:pointer;
 }
 input {
@@ -100,12 +102,17 @@ input {
   text-align:center;
   outline:none;
 }
+.cardNumber{
+	color:white;
+}
 .cardNumber input{
   width:20.9%;
+  color:white;
   margin:.75em .05em; 
 }
 .cardExpiration{
   float:left;
+  color:white;
   width:50%;
 }
 .month {
@@ -117,6 +124,7 @@ input {
 .cardSecurity {
   float:right;
   width:50%;
+  color:white;
   position:relative;
   -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
@@ -169,8 +177,9 @@ input.signIn {
 
 #holder{    
 height:350px;    
+border-radius:5px;
 width:150px;
-background-color:#F5F5F5;
+background-color:#ffffff;
 border:1px solid #A4A4A4;
 display:inline-block;
 }
@@ -218,5 +227,6 @@ verticle-align:middle;
 list-style: none outside none;
 padding-left:35px;
 height:35px;
+color:white;
 float:left;
 }
