@@ -30,12 +30,12 @@ define(['jquery', 'settings', 'apiService', 'utils'], function ($, config, apiSe
 					if (html) {
 						if (msg_container.hasClass('hidden')) { // can be optimimzed and removed from here
 							msg_container.siblings("h1").addClass('hidden');
+							msg_container.siblings("div").addClass('hidden');
 							msg_container.removeClass('hidden');
 						}
 						msg_container.append(html);
 						utils.scrollSmoothToBottom($('div.chat-body'));
-						renderButton();
-						
+						//renderButton();
 					}
 				});
 				ev.preventDefault();

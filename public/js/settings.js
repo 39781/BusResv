@@ -10,6 +10,7 @@ define({
 
     accessToken: "fdecbbaf9811476bb43cfd1ce4e5a5a6",
     chatServerURL : "https://api.api.ai/v1/",
+
     applicationTitle: "EBusBooking",
     userTitle : "Me",
     botTitle : "EBusBooking",

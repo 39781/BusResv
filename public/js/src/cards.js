@@ -30,7 +30,9 @@ define(['messageTemplates', 'uuid'], function(messageTpl, uuidv1){
             if(this.responseType == "carousel"){
                 return messageTpl.carousel(this.data, uuidv1());
             }
-
+			if (this.responseType == "quickreplyfromapiai") {
+				return messageTpl.quickrepliesfromapiai(this.data);
+			}
             if(this.responseType == "quickreplies"){
                 return messageTpl.quickreplies(this.data);
             }

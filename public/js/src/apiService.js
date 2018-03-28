@@ -33,7 +33,7 @@ function($, config, utils, messageTpl, cards, uuidv1){
 			this.userSays(userInput, callback);
 
 			this.options.query = userInput;
-
+			console.log(userInput);
 			$.ajax({
 				type: "POST",
 				url: config.chatServerURL + "query?v=20150910",
