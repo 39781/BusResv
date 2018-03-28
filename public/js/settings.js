@@ -8,12 +8,11 @@ This file is part of the Innovation LAB - Offline Bot.
 
 define({
 
-    accessToken: "b98d58673be646b3b7a13433bdf70a77",
+    accessToken: "fdecbbaf9811476bb43cfd1ce4e5a5a6",
     chatServerURL : "https://api.api.ai/v1/",
-
-    applicationTitle: "VFS Global",
+    applicationTitle: "EBusBooking",
     userTitle : "Me",
-    botTitle : "VFS Assistant",
+    botTitle : "EBusBooking",
     botAvatar : "avatar/vfslogo.png",
     userAvatar : "avatar/user.png",
     attachmentUploadURL : "",
