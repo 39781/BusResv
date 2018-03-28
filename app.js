@@ -13,6 +13,5 @@ app.use(bodyParser.json());
 app.use(routes);
 global.inputs = {};
 var server = app.listen(port,function(){
-	console.log("Application started listening port "+port);
-	
+	console.log("Application started listening port "+port);		
 });

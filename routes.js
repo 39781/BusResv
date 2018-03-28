@@ -3,11 +3,20 @@ var router			= express.Router();
 var careerConfig	= require("./config");	
 var fs 				= require("fs");	
 var request			= require('request');
-router.get('/',function(req, res){
-	console.log('req received');
-	res.send("req received");
-	res.end();
-})
+var path			= require("path");	
+
+router.get('/', function(req, res) {
+	console.log('hari');
+  res.redirect("/richowebsite");
+});
+
+router.get('/richowebsite', function(req, res) {
+  res.redirect('/home.html');
+});
+
+router.get('/chat', function(req, res) {
+  res.redirect('/chat.html');
+});
 
 router.post('/botHandler',function(req, res){
 	//console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));

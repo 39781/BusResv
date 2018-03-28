@@ -107,7 +107,7 @@ input {
 }
 .cardNumber input{
   width:20.9%;
-  color:white;
+  color:#e01034;
   margin:.75em .05em; 
 }
 .cardExpiration{
