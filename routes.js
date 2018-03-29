@@ -1,6 +1,6 @@
 var express 		= require('express');
 var router			= express.Router();	 
-var careerConfig	= require("./config");	
+var busConfig		= require("./config");	
 var fs 				= require("fs");	
 var request			= require('request');
 var path			= require("path");	
@@ -34,10 +34,35 @@ router.post('/botHandler',function(req, res){
 	console.log('Dialogflow Request body: ' + JSON.stringify(req.body));	
 	console.log(req.body.result.parameters);
 	var sessionId = (req.body.sessionId)?req.body.sessionId:'';	
-	
-	console.log(JSON.stringify('hari'));
+	var busExist = false, respText="";
+	if(busConfig[req.body.result.parameters.from]){
+		if(busConfig[req.body.result.parameters.from][req.body.result.parameters.to]){
+			busExist = true;
+		}
+	}
+	if(busConfig[req.body.result.parameters.to]){
+		if(busConfig[req.body.result.parameters.to][req.body.result.parameters.from]){
+			busExist = true;
+		}
+	}
+	if(busExist){
+		respText = "/bookinghtml?name="+req.body.result.parameters.name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.date+"from="+req.body.result.parameters.from+"to="+req.body.result.parameters.to+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig[req.body.result.parameters.from][req.body.result.parameters.to][req.body.result.parameters.bustype].fare;
+	}else{
+		respText = "Sorry right now we are not providing bus service between "+req.body.result.parameters.from+" to "+req.body.result.parameters.to; 
+	}
 	res.status(200);
-	res.json({}).end();
+	res.json({			
+			"speech": "",								
+			"messages": [{
+			  "type": 0,
+			  "platform": "facebook",
+			  "speech": respText
+			},	
+			{
+			  "type": 0,
+			  "speech": ""
+			}]
+		}).end();
 });
 
 router.get("/ticket",function(req, res){

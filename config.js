@@ -1,7 +1,7 @@
 module.exports = {
 	fare:{
 		che:{
-			ban:{
+			hyd:{
 				dist:"300km",
 				exp:{
 					fare:250
