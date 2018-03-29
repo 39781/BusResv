@@ -119,6 +119,7 @@ define(['jquery', 'settings', 'apiService', 'utils'], function ($, config, apiSe
         
         $(document).on('click', '.apiQuickreplybtnPayload', function (e) {
 			var payloadInput = $(this).data().apiquickrepliespayload;
+			$('.apiQuickreplybtnPayload').hide();
 			processor.askBot(payloadInput, function (error, html) {
 				if (error) {
 					console.log("error occured while processing your Request") //change into some inline fancy display, show error in chat window.
