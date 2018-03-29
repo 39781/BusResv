@@ -187,7 +187,13 @@ function($, config, utils, messageTpl, cards, uuidv1){
 					}
 					//Apiai Quickreply
 					if(isQuickReplyFromApiai){
-						let cardHTML = cards(response.result.fulfillment.messages, "quickreplyfromapiai");
+						let cardHTML = cards({
+							"payload": response.result.fulfillment.messages,
+								"senderName": config.botTitle,
+								"senderAvatar": config.botAvatar,
+								"time": utils.currentTime(),
+								"className": ''
+						}, "quickreplyfromapiai");
 						callback(null, cardHTML);
 					}
 					if(isVideo){

@@ -24,9 +24,9 @@ router.post('/botHandler',function(req, res){
 	console.log(req.body.result.parameters);
 	var sessionId = (req.body.sessionId)?req.body.sessionId:'';	
 	
-	console.log(JSON.stringify(responseObj));
+	console.log(JSON.stringify('hari'));
 	res.status(200);
-	res.json(responseObj).end();
+	res.json({}).end();
 });
 
 module.exports = router;
