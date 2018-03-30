@@ -18,3 +18,5 @@ global.bookingInfo = {
 var server = app.listen(port,function(){
 	console.log("Application started listening port "+port);		
 });
+
+

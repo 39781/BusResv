@@ -43,21 +43,22 @@ router.post('/botHandler',function(req, res){
 	});
 	var sessionId = (req.body.sessionId)?req.body.sessionId:'';	
 	var busExist = false, respText="";
-	if(busConfig[req.body.result.parameters.from]){
-		if(busConfig[req.body.result.parameters.from][req.body.result.parameters.to]){
+	console.log(busConfig.fare);
+	if(busConfig.fare[req.body.result.parameters.source]){
+		if(busConfig.fare[req.body.result.parameters.source][req.body.result.parameters.Destination]){
 			busExist = true;
 		}
 	}
-	if(busConfig[req.body.result.parameters.to]){
-		if(busConfig[req.body.result.parameters.to][req.body.result.parameters.from]){
+	if(busConfig.fare[req.body.result.parameters.Destination]){
+		if(busConfig.fare[req.body.result.parameters.Destination][req.body.result.parameters.source]){
 			busExist = true;
 		}
 	}
 	console.log(req.body.result.parameters);
 	if(busExist){
-		respText = "/booking.html?name="+req.body.result.parameters.name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.date+"from="+req.body.result.parameters.from+"to="+req.body.result.parameters.to+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig[req.body.result.parameters.from][req.body.result.parameters.to][req.body.result.parameters.bustype].fare;
+		respText = "/booking.html?name="+req.body.result.parameters.Name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.Date+"from="+req.body.result.parameters.source+"to="+req.body.result.parameters.Destination+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig.fare[req.body.result.parameters.source][req.body.result.parameters.Destination][req.body.result.parameters.bustype].fare;
 	}else{
-		respText = "Sorry right now we are not providing bus service between "+req.body.result.parameters.from+" to "+req.body.result.parameters.to; 
+		respText = "Sorry right now we are not providing bus service between "+req.body.result.parameters.source+" to "+req.body.result.parameters.Destination; 
 	}
 	res.status(200);
 	res.json({			
