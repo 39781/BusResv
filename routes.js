@@ -77,8 +77,7 @@ router.get("/ticket",function(req, res){
 	}
 });
 
-router.post("/paymentGateway",function(req, res){
-	console.log(req);
+router.post("/paymentGateway",function(req, res){	
 	var cardNo = req.body.cardNo;
 	var expDate = req.body.expDate;
 	var cvv = req.body.cvv;
