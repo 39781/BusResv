@@ -53,6 +53,7 @@ router.post('/botHandler',function(req, res){
 			busExist = true;
 		}
 	}
+	console.log(req.body.result.parameters);
 	if(busExist){
 		respText = "/booking.html?name="+req.body.result.parameters.name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.date+"from="+req.body.result.parameters.from+"to="+req.body.result.parameters.to+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig[req.body.result.parameters.from][req.body.result.parameters.to][req.body.result.parameters.bustype].fare;
 	}else{
