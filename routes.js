@@ -35,10 +35,10 @@ router.post('/botHandler',function(req, res){
 	console.log(req.body.result.parameters);
 	var keys = Object.keys(req.body.result.parameters);
 	keys.forEach(function(key){		
-		if(key == 'date'&&req.body.result.parameters[key].length>1){
+		if(key == 'Date'&&req.body.result.parameters[key].length>1){
 			req.body.result.parameters[key] = req.body.result.parameters[key][0]+'T'+req.body.result.parameters[key][1]
 		}else{
-			req.body.result.parameters[key] = req.body.result.parameters[key].toString();
+			req.body.result.parameters[key] = req.body.result.parameters[key].toString().toLowerCase();
 		}
 	});
 	var sessionId = (req.body.sessionId)?req.body.sessionId:'';	
