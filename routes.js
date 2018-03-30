@@ -33,6 +33,14 @@ router.post('/botHandler',function(req, res){
 	//console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
 	console.log('Dialogflow Request body: ' + JSON.stringify(req.body));	
 	console.log(req.body.result.parameters);
+	var keys = Object.keys(req.body.result.parameters);
+	keys.forEach(function(key){		
+		if(key == 'date'&&req.body.result.parameters[key].length>1){
+			req.body.result.parameters[key] = req.body.result.parameters[key][0]+'T'+req.body.result.parameters[key][1]
+		}else{
+			req.body.result.parameters[key] = req.body.result.parameters[key].toString();
+		}
+	});
 	var sessionId = (req.body.sessionId)?req.body.sessionId:'';	
 	var busExist = false, respText="";
 	if(busConfig[req.body.result.parameters.from]){
@@ -46,7 +54,7 @@ router.post('/botHandler',function(req, res){
 		}
 	}
 	if(busExist){
-		respText = "/bookinghtml?name="+req.body.result.parameters.name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.date+"from="+req.body.result.parameters.from+"to="+req.body.result.parameters.to+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig[req.body.result.parameters.from][req.body.result.parameters.to][req.body.result.parameters.bustype].fare;
+		respText = "/booking.html?name="+req.body.result.parameters.name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.date+"from="+req.body.result.parameters.from+"to="+req.body.result.parameters.to+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig[req.body.result.parameters.from][req.body.result.parameters.to][req.body.result.parameters.bustype].fare;
 	}else{
 		respText = "Sorry right now we are not providing bus service between "+req.body.result.parameters.from+" to "+req.body.result.parameters.to; 
 	}
