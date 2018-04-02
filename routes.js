@@ -34,8 +34,8 @@ router.post('/botHandler',function(req, res){
 	console.log('Dialogflow Request body: ' + JSON.stringify(req.body));	
 	console.log(req.body.result.parameters);
 	var keys = Object.keys(req.body.result.parameters);
-	keys.forEach(function(key){		
-		if(key == 'Date'&&req.body.result.parameters[key].length>1){
+	keys.forEach(function(key){			
+		if(key == 'Date'&&Array.isArray(req.body.result.parameters[key])){
 			req.body.result.parameters[key] = req.body.result.parameters[key][0]+'T'+req.body.result.parameters[key][1]
 		}else{
 			req.body.result.parameters[key] = req.body.result.parameters[key].toString().toLowerCase();
@@ -56,12 +56,42 @@ router.post('/botHandler',function(req, res){
 	}
 	console.log(req.body.result.parameters);
 	if(busExist){
-		respText = "/booking.html?name="+req.body.result.parameters.Name+"phone="+req.body.result.parameters.phone+"date="+req.body.result.parameters.Date+"from="+req.body.result.parameters.source+"to="+req.body.result.parameters.Destination+"bustype="+req.body.result.parameters.bustype+"fare="+busConfig.fare[req.body.result.parameters.source][req.body.result.parameters.Destination][req.body.result.parameters.bustype].fare;
+		console.log(req.body.result.parameters.Date);
+		respText = "/booking.html?name="+req.body.result.parameters.Name+"&phone="+req.body.result.parameters.Phone+"&date="+req.body.result.parameters.Date+"&from="+req.body.result.parameters.source+"&to="+req.body.result.parameters.Destination+"&bustype="+req.body.result.parameters.bustype+"&fare="+busConfig.fare[req.body.result.parameters.source][req.body.result.parameters.Destination][req.body.result.parameters.bustype].fare;
+		responseObj = {
+		  "speech": "",		  
+		  "messages": [{
+			  "type": 4,
+			  "platform": "facebook",
+			  "payload": {
+				"facebook": {
+				  "attachment": {
+					"type": "template",
+					"payload": {
+					  "template_type": "button",
+					  "text": "Click below button to view details",
+					  "buttons": [{
+						  "type": "web_url",
+						  //"url": "https://limitless-lake-62312.herokuapp.com/index.html",
+						  "url": respText,
+						  "title": "view",
+						  "webview_height_ratio": "tall",
+						  "messenger_extensions": "true"
+						}]
+					}
+				  }
+				}
+			  }
+			},
+			{
+			  "type": 0,
+			  "speech": ""
+			}
+		  ]
+		}
 	}else{
 		respText = "Sorry right now we are not providing bus service between "+req.body.result.parameters.source+" to "+req.body.result.parameters.Destination; 
-	}
-	res.status(200);
-	res.json({			
+		responseObj = {			
 			"speech": "",								
 			"messages": [{
 			  "type": 0,
@@ -72,7 +102,10 @@ router.post('/botHandler',function(req, res){
 			  "type": 0,
 			  "speech": ""
 			}]
-		}).end();
+		}
+	}
+	res.status(200);
+	res.json(responseObj).end();
 });
 
 router.get("/ticket",function(req, res){

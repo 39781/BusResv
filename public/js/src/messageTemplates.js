@@ -209,5 +209,40 @@ define(["utils","settings"], function (utils,settings) {
 
         return carousel;
     }
+	methods.webview=(data, uniqueId)=>{
+
+        let html;
+        let cardButtons = "";
+        let cardBody;        
+            cardBody = `<li class="list-group-item background-color-custom animated fadeInLeft">
+            <div class="pmd-card pmd-card-default pmd-z-depth custom-infocard">
+                <!-- Card header -->
+                <div class="pmd-card-title">
+
+
+                </div>`
+            
+            cardBody += `<div class="pmd-card-title">
+                <h3 class="card-body"><p class="card-title">${data.payload.text}</p>                
+                </div>`
+
+            if (data.payload.buttons) {
+                console.log("Buttons" + data);
+                cardButtons = `<div class="pmd-card-actions">`
+                for (var j = 0; j < data.payload.buttons.length; j++) {
+                  if(data.payload.buttons[j].postback=="other_queries_non_invoice"){
+                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom cardresponsepayload"  onClick="window.open('http://localhost:3000"${data.payload.buttons[j].url}"','chat70994705','width=400,height=600,resizable=yes');return false;" >${data.payload.buttons[j].title}</button>`
+                  }
+                  else{
+                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom cardresponsepayload"  onClick="window.open('http://localhost:3000"${data.payload.buttons[j].url}"','chat70994705','width=400,height=600,resizable=yes');return false;" >${data.payload.buttons[j].title}</button>`
+                  }
+
+                }
+                cardButtons += `</div>`
+            }
+            html = cardBody + cardButtons + `</div></div><p class="bot-res-timestamp-card"><small> <img style="border-radius:50%;border:2px solid white;" width="20" height="20" src='${settings.botAvatar}'/>${data.time}</small></p></div></li>`;
+        
+        return html;
+    }
     return methods;
 });

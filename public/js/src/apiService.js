@@ -60,6 +60,8 @@ function($, config, utils, messageTpl, cards, uuidv1){
 					let logoutData=null;
 					let login=null;
 					let isLogIn=false;
+					let webviewData = null;
+					let isWebView = false;
 					//To find Card || Carousel
 					let count = 0;
 					let hasbutton;
@@ -115,20 +117,23 @@ function($, config, utils, messageTpl, cards, uuidv1){
 
 							if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=='logout'){
 								isLogOut=true;
-							logoutData=response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
+								logoutData=response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
 							console.log(isLogOut);
 							}
-
 							
 							if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=='login'){
-							login=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.elements;
-								isLogIn=true;
-	
-							 }
-	
-
-
-
+								login=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.elements;
+								isLogIn=true;	
+							}
+							if(['button','generic'].indexOf(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type)>=0){								
+								buttons=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.buttons;
+								for(let l=0; l<buttons.length;l++){
+									if(buttons[l].type == 'web_url'){
+										isWebView = true;
+										webviewData = response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
+									}
+								}								
+							}
 						}
 					}
 				}
@@ -246,6 +251,18 @@ function($, config, utils, messageTpl, cards, uuidv1){
 							"className": '',
 							"isWeb":$('#webchat').context.URL
 						}, "logout");
+						callback(null, cardHTML);
+					}
+					if (isWebView) {
+						console.log("ISWEB:::"+$('#webchat').context.URL);
+						let cardHTML = cards({
+							"payload": webviewData,							
+							"senderName": config.botTitle,
+							"senderAvatar": config.botAvatar,
+							"time": utils.currentTime(),
+							"className": '',
+							"isWeb":$('#webchat').context.URL
+						}, "webview");
 						callback(null, cardHTML);
 					}
 					if (isLogIn) {
