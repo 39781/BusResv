@@ -65,6 +65,8 @@ function($, config, utils, messageTpl, cards, uuidv1){
 					//To find Card || Carousel
 					let count = 0;
 					let hasbutton;
+					let buttons;
+					
 					console.log(response);
 					if(response.result.fulfillment.messages){
 					for(let i in response.result.fulfillment.messages){
