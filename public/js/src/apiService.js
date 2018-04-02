@@ -125,7 +125,8 @@ function($, config, utils, messageTpl, cards, uuidv1){
 								login=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.elements;
 								isLogIn=true;	
 							}
-							if(['button','generic'].indexOf(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type)>=0){								
+							if(['button','generic'].indexOf(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type)>=0){		
+								console.log(JSON.stringify(response));
 								buttons=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.buttons;
 								for(let l=0; l<buttons.length;l++){
 									if(buttons[l].type == 'web_url'){
