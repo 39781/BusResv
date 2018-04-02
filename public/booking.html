@@ -102,6 +102,23 @@
 	//init();
 
 	//Case II: If already booked
+	var url_string = window.location.href; //window.location.href
+	var url = new URL(url_string);
+	var name = url.searchParams.get("name");
+	var phno = url.searchParams.get("phone");
+	var dat = url.searchParams.get("date");
+	var from = url.searchParams.get("from");
+	var to =  url.searchParams.get("to");
+	var bustype = url.searchParams.get("bustype");
+	var fare = url.searchParams.get("fare");
+	$('#name').html(name),
+	$('#phno').html(phno),
+	$('#from').html(from),
+	$('#date').html(dat),
+	$('#to').html(to),
+	$('#fare').html(fare),		
+	$('#bustype').html(bustype),
+	seatBookingUrl = 'https://fast-reef-26757.herokuapp.com/getBookedSeats/'+from+'/'+to+'/'+bustype+'/'+fare;
 	var bookedSeats = [];	
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {		
@@ -112,7 +129,7 @@
 			loadJQueryEvents();
 		}
 	};
-	xhr.open('GET', 'https://fast-reef-26757.herokuapp.com/getBookedSeats/Hyd/Che/Exp/25-04-2018',true);	
+	xhr.open('GET', seatBookingUrl,true);	
 	xhr.send();
 	console.log(settings.seatCss);
 	function loadJQueryEvents(){
