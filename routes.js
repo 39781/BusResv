@@ -82,10 +82,6 @@ router.post('/botHandler',function(req, res){
 				  }
 				}
 			  }
-			},
-			{
-			  "type": 0,
-			  "speech": ""
 			}
 		  ]
 		}
@@ -97,10 +93,6 @@ router.post('/botHandler',function(req, res){
 			  "type": 0,
 			  "platform": "facebook",
 			  "speech": respText
-			},	
-			{
-			  "type": 0,
-			  "speech": ""
 			}]
 		}
 	}
