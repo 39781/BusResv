@@ -118,7 +118,7 @@
 	$('#to').html(to),
 	$('#fare').html(fare),		
 	$('#bustype').html(bustype),
-	seatBookingUrl = 'https://fast-reef-26757.herokuapp.com/getBookedSeats/'+from+'/'+to+'/'+bustype+'/'+fare;
+	seatBookingUrl = 'https://fast-reef-26757.herokuapp.com/getBookedSeats/'+from+'/'+to+'/'+bustype+'/'+dat;
 	var bookedSeats = [];	
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {		
