@@ -19,7 +19,6 @@ function($, config, utils, messageTpl, cards, uuidv1){
 		}
 
 		userSays(userInput, callback){
-
 			callback(null, messageTpl.userplaintext({
 				"payload": userInput,
 				"senderName": config.userTitle,

@@ -33,6 +33,74 @@ router.post('/botHandler',function(req, res){
 	//console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
 	console.log('Dialogflow Request body: ' + JSON.stringify(req.body));	
 	console.log(req.body.result.parameters);
+	
+	switch(req.body.result.metadata.intentName){		
+		case 'bookticket':func = bookedSeats;inputObj = JSON.parse(JSON.stringify(req)); break;
+		case 'ticket':func = ticket; inputObj = req.query.transCode;break;
+	}
+	func(inputObj)
+	.then((respJson)=>{
+		res.status(200);
+		res.json(responseObj).end();	
+	})
+	.catch((errInfoJson)=>{
+		res.status(400);
+		res.json(responseObj).end();	
+	})	
+});
+
+router.get("/ticket",function(req, res){
+	console.log(bookingInfo['tickets'][req.query.transCode],req.query.transCode);
+	ticket(req.query.transCode)
+	.then((tick)=>{
+		res.status(200);
+		res.end(tick);
+	})
+	.catch((errInfo)=>{
+		res.status(400);
+		res.end(errInfo);
+	})
+});
+
+router.post("/paymentGateway",function(req, res){	
+	var cardNo = req.body.cardNo;
+	var expDate = req.body.expDate;
+	var cvv = req.body.cvv;
+	if(cvv == '000'){
+		res.status(400);
+		res.json({responseMsg:"transaction failed","transactionCode":"trans1999","reason":"invalid card details"}).end();		
+	}else{
+		bookingInfo['tickets']["trans2000"] = req.body;	
+		console.log(req.body);
+		if(!bookingInfo['seatsInfo'][req.body.source])
+			bookingInfo['seatsInfo'][req.body.source]={};
+		
+		if(!bookingInfo['seatsInfo'][req.body.source][req.body.dest])
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest]={};
+		if(!bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype])
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype]={};
+		if(bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]){
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date] = bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date].concat(req.body.bookedSeats);
+		}else{
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]=req.body.bookedSeats;		
+		}					
+		res.status(200);
+		res.json({responseMsg:"transaction successful","transactionCode":"trans2000","redirectUrl":"/ticket?transCode=trans2000"}).end();		
+	}
+})
+
+var ticket = function(transCode){
+	return new Promise(function(resolve, reject){
+		if(bookingInfo['tickets'][transCode]){
+			var ticket = "<table id='ticket' align='center'><thead><tr><th colspan=2>TICKET</th></tr></thead><tr><td>Name : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].name+"</span></td><td>Date : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].date+"</span></td></tr><tr><td>Soruce : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].source+"</span></td><td>Destination : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].dest+"</span></td></tr><tr><td>Bus Type : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].bustype+"</span></td><td>Fare : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].fare+"</span></td></tr><tr><td>Total Tickets : <span class='ticketspan'>"+bookingInfo['tickets'][transCode].totTics+"</span></td><td>Total fare <span class='ticketspan'>: "+bookingInfo['tickets'][transCode].tcost+"</span></td></tr><tr><td colspan=2>booked seats <span class='ticketspan'>: "+bookingInfo['tickets'][transCode].bookedSeats+"</span></td></tr></table>";
+			resolve(ticket);
+		}else{
+			reject("Invalid transaction Code")
+		}
+	})
+}
+
+var bookingSeats = function(req){
 	var keys = Object.keys(req.body.result.parameters);
 	keys.forEach(function(key){			
 		if(key == 'Date'&&Array.isArray(req.body.result.parameters[key])){
@@ -96,48 +164,8 @@ router.post('/botHandler',function(req, res){
 			}]
 		}
 	}
-	res.status(200);
-	res.json(responseObj).end();
-});
-
-router.get("/ticket",function(req, res){
-	console.log(bookingInfo['tickets'][req.query.transCode],req.query.transCode);
-	if(bookingInfo['tickets'][req.query.transCode]){
-		var ticket = "<table id='ticket' align='center'><thead><tr><th colspan=2>TICKET</th></tr></thead><tr><td>Name : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].name+"</span></td><td>Date : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].date+"</span></td></tr><tr><td>Soruce : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].source+"</span></td><td>Destination : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].dest+"</span></td></tr><tr><td>Bus Type : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].bustype+"</span></td><td>Fare : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].fare+"</span></td></tr><tr><td>Total Tickets : <span class='ticketspan'>"+bookingInfo['tickets'][req.query.transCode].totTics+"</span></td><td>Total fare <span class='ticketspan'>: "+bookingInfo['tickets'][req.query.transCode].tcost+"</span></td></tr><tr><td colspan=2>booked seats <span class='ticketspan'>: "+bookingInfo['tickets'][req.query.transCode].bookedSeats+"</span></td></tr></table>";
-		res.status(200);
-		res.end(ticket);
-	}else{
-		res.status(200);
-		res.end("Invalid Ticket");
-	}
-});
-
-router.post("/paymentGateway",function(req, res){	
-	var cardNo = req.body.cardNo;
-	var expDate = req.body.expDate;
-	var cvv = req.body.cvv;
-	if(cvv == '000'){
-		res.status(400);
-		res.json({responseMsg:"transaction failed","transactionCode":"trans1999","reason":"invalid card details"}).end();		
-	}else{
-		bookingInfo['tickets']["trans2000"] = req.body;	
-		console.log(req.body);
-		if(!bookingInfo['seatsInfo'][req.body.source])
-			bookingInfo['seatsInfo'][req.body.source]={};
-		
-		if(!bookingInfo['seatsInfo'][req.body.source][req.body.dest])
-			bookingInfo['seatsInfo'][req.body.source][req.body.dest]={};
-		if(!bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype])
-			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype]={};
-		if(bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]){
-			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date] = bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date].concat(req.body.bookedSeats);
-		}else{
-			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]=req.body.bookedSeats;		
-		}					
-		res.status(200);
-		res.json({responseMsg:"transaction successful","transactionCode":"trans2000","redirectUrl":"/ticket?transCode=trans2000"}).end();		
-	}
-})
+	resolve(responseObj);	
+}
 module.exports = router;
 
 
