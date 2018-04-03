@@ -101,70 +101,72 @@ var ticket = function(transCode){
 }
 
 var bookingSeats = function(req){
-	var keys = Object.keys(req.result.parameters);
-	keys.forEach(function(key){			
-		if(key == 'Date'&&Array.isArray(req.result.parameters[key])){
-			req.result.parameters[key] = req.result.parameters[key][0]+'T'+req.result.parameters[key][1]
-		}else{
-			req.result.parameters[key] = req.result.parameters[key].toString().toLowerCase();
+	return new Promise(function(resolve, reject){
+		var keys = Object.keys(req.result.parameters);
+		keys.forEach(function(key){			
+			if(key == 'Date'&&Array.isArray(req.result.parameters[key])){
+				req.result.parameters[key] = req.result.parameters[key][0]+'T'+req.result.parameters[key][1]
+			}else{
+				req.result.parameters[key] = req.result.parameters[key].toString().toLowerCase();
+			}
+		});
+		var sessionId = (req.sessionId)?req.sessionId:'';	
+		var busExist = false, respText="";
+		console.log(busConfig.fare);
+		if(busConfig.fare[req.result.parameters.source]){
+			if(busConfig.fare[req.result.parameters.source][req.result.parameters.Destination]){
+				busExist = true;
+			}
 		}
-	});
-	var sessionId = (req.sessionId)?req.sessionId:'';	
-	var busExist = false, respText="";
-	console.log(busConfig.fare);
-	if(busConfig.fare[req.result.parameters.source]){
-		if(busConfig.fare[req.result.parameters.source][req.result.parameters.Destination]){
-			busExist = true;
+		if(busConfig.fare[req.result.parameters.Destination]){
+			if(busConfig.fare[req.result.parameters.Destination][req.result.parameters.source]){
+				busExist = true;
+			}
 		}
-	}
-	if(busConfig.fare[req.result.parameters.Destination]){
-		if(busConfig.fare[req.result.parameters.Destination][req.result.parameters.source]){
-			busExist = true;
-		}
-	}
-	console.log(req.result.parameters);
-	if(busExist){
-		console.log(req.result.parameters.Date);
-		respText = "/booking.html?name="+req.result.parameters.Name+"&phone="+req.result.parameters.Phone+"&date="+req.result.parameters.Date+"&from="+req.result.parameters.source+"&to="+req.result.parameters.Destination+"&bustype="+req.result.parameters.bustype+"&fare="+busConfig.fare[req.result.parameters.source][req.result.parameters.Destination][req.result.parameters.bustype].fare;
-		responseObj = {
-		  "speech": "",		  
-		  "messages": [{
-			  "type": 4,
-			  "platform": "facebook",
-			  "payload": {
-				"facebook": {
-				  "attachment": {
-					"type": "template",
-					"payload": {
-					  "template_type": "button",
-					  "text": "Click below button to view details",
-					  "buttons": [{
-						  "type": "web_url",
-						  //"url": "https://limitless-lake-62312.herokuapp.com/index.html",
-						  "url": respText,
-						  "title": "view",
-						  "webview_height_ratio": "tall",
-						  "messenger_extensions": "true"
-						}]
+		console.log(req.result.parameters);
+		if(busExist){
+			console.log(req.result.parameters.Date);
+			respText = "/booking.html?name="+req.result.parameters.Name+"&phone="+req.result.parameters.Phone+"&date="+req.result.parameters.Date+"&from="+req.result.parameters.source+"&to="+req.result.parameters.Destination+"&bustype="+req.result.parameters.bustype+"&fare="+busConfig.fare[req.result.parameters.source][req.result.parameters.Destination][req.result.parameters.bustype].fare;
+			responseObj = {
+			  "speech": "",		  
+			  "messages": [{
+				  "type": 4,
+				  "platform": "facebook",
+				  "payload": {
+					"facebook": {
+					  "attachment": {
+						"type": "template",
+						"payload": {
+						  "template_type": "button",
+						  "text": "Click below button to view details",
+						  "buttons": [{
+							  "type": "web_url",
+							  //"url": "https://limitless-lake-62312.herokuapp.com/index.html",
+							  "url": respText,
+							  "title": "view",
+							  "webview_height_ratio": "tall",
+							  "messenger_extensions": "true"
+							}]
+						}
+					  }
 					}
 				  }
 				}
-			  }
+			  ]
 			}
-		  ]
+		}else{
+			respText = "Sorry right now we are not providing bus service between "+req.result.parameters.source+" to "+req.result.parameters.Destination; 
+			responseObj = {			
+				"speech": "",								
+				"messages": [{
+				  "type": 0,
+				  "platform": "facebook",
+				  "speech": respText
+				}]
+			}
 		}
-	}else{
-		respText = "Sorry right now we are not providing bus service between "+req.result.parameters.source+" to "+req.result.parameters.Destination; 
-		responseObj = {			
-			"speech": "",								
-			"messages": [{
-			  "type": 0,
-			  "platform": "facebook",
-			  "speech": respText
-			}]
-		}
-	}
-	resolve(responseObj);	
+		resolve(responseObj);	
+	});
 }
 module.exports = router;
 
