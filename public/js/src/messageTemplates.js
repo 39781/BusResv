@@ -231,10 +231,10 @@ define(["utils","settings"], function (utils,settings) {
                 cardButtons = `<div class="pmd-card-actions">`
                 for (var j = 0; j < data.payload.buttons.length; j++) {
                   if(data.payload.buttons[j].postback=="other_queries_non_invoice"){
-                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom cardresponsepayload"  onClick="window.open('http://localhost:3000/"${data.payload.buttons[j].url}"','chat70994705','width=400,height=600,resizable=yes');return false;" >${data.payload.buttons[j].title}</button>`
+                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom cardresponsepayload"  onClick="window.open('http://localhost:3000/"${data.payload.buttons[j].url}"','chat70994705','width=400,height=600,resizable=yes');$('.cardresponsepayload').hide();return false;" >${data.payload.buttons[j].title}</button>`
                   }
                   else{
-                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom"  onClick="window.open('https://fast-reef-26757.herokuapp.com/${data.payload.buttons[j].url}','chat70994705','width=400,height=600,resizable=yes');return false;" >${data.payload.buttons[j].title}</button>`
+                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom"  onClick="window.open('https://fast-reef-26757.herokuapp.com/${data.payload.buttons[j].url}','chat70994705','width=400,height=600,resizable=yes');$('.cardresponsepayload').hide();return false;" >${data.payload.buttons[j].title}</button>`
                   }
 
                 }
