@@ -70,7 +70,10 @@ router.post("/paymentGateway",function(req, res){
 		res.status(400);
 		res.json({responseMsg:"transaction failed","transactionCode":"trans1999","reason":"invalid card details"}).end();		
 	}else{
-		bookingInfo['tickets']["trans2000"] = req.body;	
+		var dt = new Date();
+		var seed = dt.getFullYear().toString() + dt.getDay().toString() + dt.getMonth().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString();
+		console.log(seed);
+		bookingInfo['tickets']["trans"+seed] = req.body;	
 		console.log(req.body);
 		if(!bookingInfo['seatsInfo'][req.body.source])
 			bookingInfo['seatsInfo'][req.body.source]={};
@@ -84,8 +87,6 @@ router.post("/paymentGateway",function(req, res){
 		}else{
 			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]=req.body.bookedSeats;		
 		}				
-		var dt = new Date();
-		var seed = dt.getYear() + dt.getDay() + dt.getMonth() + dt.getHours() + dt.getMinutes() + dt.getSeconds();		
 		res.status(200);
 		res.json({responseMsg:"transaction successful","transactionCode":"trans"+seed,"redirectUrl":"/ticket?transCode=trans"+seed}).end()
 	}
