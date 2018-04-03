@@ -238,20 +238,21 @@ float:left;
 	color:white;
 }
 #ticket{
-	color: white;
-    background-color: #6b6b6b;
-    border-radius: 10px;
-    box-shadow: 0px 0px 1px 1px;
-    font-size: 0.9em;
-    font-weight: 550;
+	color: white !important;
+    background-color: #6b6b6b !important;
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 1px 1px !important;
+    font-size: 0.9em !important;
+    font-weight: 550 !important;
 }
 #ticket td{
 }
 #ticket th{
-	color: #d2e2fb;
-    border-bottom: 1px solid white;
-    box-shadow: 0px 1px 2px 0px;
-    border-radius: 10px;
+	color: #d2e2fb !important;
+    border-bottom: 1px solid white !important;
+    box-shadow: 0px 1px 2px 0px !important;
+    border-radius: 10px !important;
+	text-align:center !important;
 }
 .ticketspan{
 	color: #eef5bb;
