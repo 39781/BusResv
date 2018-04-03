@@ -83,9 +83,11 @@ router.post("/paymentGateway",function(req, res){
 			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date] = bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date].concat(req.body.bookedSeats);
 		}else{
 			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]=req.body.bookedSeats;		
-		}					
+		}				
+		var dt = new Date();
+		var seed = dt.getYear() + dt.getDay() + dt.getMonth() + dt.getHours() + dt.getMinutes() + dt.getSeconds();		
 		res.status(200);
-		res.json({responseMsg:"transaction successful","transactionCode":"trans2000","redirectUrl":"/ticket?transCode=trans2000"}).end();		
+		res.json({responseMsg:"transaction successful","transactionCode":"trans"+seed,"redirectUrl":"/ticket?transCode=trans"+seed}).end()
 	}
 })
 
