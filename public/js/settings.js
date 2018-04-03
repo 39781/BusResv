@@ -14,7 +14,7 @@ define({
     applicationTitle: "EBusBooking",
     userTitle : "Me",
     botTitle : "EBusBooking",
-    botAvatar : "avatar/vfslogo.png",
+    botAvatar : "avatar/macy.jpg",
     userAvatar : "avatar/user.png",
     attachmentUploadURL : "",
     platform : "facebook",
