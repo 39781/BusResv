@@ -35,7 +35,7 @@ router.post('/botHandler',function(req, res){
 	console.log(req.body.result.parameters);
 	
 	switch(req.body.result.metadata.intentName){		
-		case 'bookticket':func = bookedSeats;inputObj = JSON.parse(JSON.stringify(req)); break;
+		case 'bookticket':func = bookingSeats;inputObj = JSON.parse(JSON.stringify(req)); break;
 		case 'ticket':func = ticket; inputObj = req.query.transCode;break;
 	}
 	func(inputObj)
