@@ -35,7 +35,7 @@ router.post('/botHandler',function(req, res){
 	console.log(req.body.result.parameters);
 	
 	switch(req.body.result.metadata.intentName){		
-		case 'bookticket':func = bookingSeats;inputObj = JSON.parse(JSON.stringify(req)); break;
+		case 'bookticket':func = bookingSeats;inputObj = JSON.parse(JSON.stringify(req.body)); break;
 		case 'ticket':func = ticket; inputObj = req.query.transCode;break;
 	}
 	func(inputObj)
@@ -101,31 +101,31 @@ var ticket = function(transCode){
 }
 
 var bookingSeats = function(req){
-	var keys = Object.keys(req.body.result.parameters);
+	var keys = Object.keys(req.result.parameters);
 	keys.forEach(function(key){			
-		if(key == 'Date'&&Array.isArray(req.body.result.parameters[key])){
-			req.body.result.parameters[key] = req.body.result.parameters[key][0]+'T'+req.body.result.parameters[key][1]
+		if(key == 'Date'&&Array.isArray(req.result.parameters[key])){
+			req.result.parameters[key] = req.result.parameters[key][0]+'T'+req.result.parameters[key][1]
 		}else{
-			req.body.result.parameters[key] = req.body.result.parameters[key].toString().toLowerCase();
+			req.result.parameters[key] = req.result.parameters[key].toString().toLowerCase();
 		}
 	});
-	var sessionId = (req.body.sessionId)?req.body.sessionId:'';	
+	var sessionId = (req.sessionId)?req.sessionId:'';	
 	var busExist = false, respText="";
 	console.log(busConfig.fare);
-	if(busConfig.fare[req.body.result.parameters.source]){
-		if(busConfig.fare[req.body.result.parameters.source][req.body.result.parameters.Destination]){
+	if(busConfig.fare[req.result.parameters.source]){
+		if(busConfig.fare[req.result.parameters.source][req.result.parameters.Destination]){
 			busExist = true;
 		}
 	}
-	if(busConfig.fare[req.body.result.parameters.Destination]){
-		if(busConfig.fare[req.body.result.parameters.Destination][req.body.result.parameters.source]){
+	if(busConfig.fare[req.result.parameters.Destination]){
+		if(busConfig.fare[req.result.parameters.Destination][req.result.parameters.source]){
 			busExist = true;
 		}
 	}
-	console.log(req.body.result.parameters);
+	console.log(req.result.parameters);
 	if(busExist){
-		console.log(req.body.result.parameters.Date);
-		respText = "/booking.html?name="+req.body.result.parameters.Name+"&phone="+req.body.result.parameters.Phone+"&date="+req.body.result.parameters.Date+"&from="+req.body.result.parameters.source+"&to="+req.body.result.parameters.Destination+"&bustype="+req.body.result.parameters.bustype+"&fare="+busConfig.fare[req.body.result.parameters.source][req.body.result.parameters.Destination][req.body.result.parameters.bustype].fare;
+		console.log(req.result.parameters.Date);
+		respText = "/booking.html?name="+req.result.parameters.Name+"&phone="+req.result.parameters.Phone+"&date="+req.result.parameters.Date+"&from="+req.result.parameters.source+"&to="+req.result.parameters.Destination+"&bustype="+req.result.parameters.bustype+"&fare="+busConfig.fare[req.result.parameters.source][req.result.parameters.Destination][req.result.parameters.bustype].fare;
 		responseObj = {
 		  "speech": "",		  
 		  "messages": [{
@@ -154,7 +154,7 @@ var bookingSeats = function(req){
 		  ]
 		}
 	}else{
-		respText = "Sorry right now we are not providing bus service between "+req.body.result.parameters.source+" to "+req.body.result.parameters.Destination; 
+		respText = "Sorry right now we are not providing bus service between "+req.result.parameters.source+" to "+req.result.parameters.Destination; 
 		responseObj = {			
 			"speech": "",								
 			"messages": [{
