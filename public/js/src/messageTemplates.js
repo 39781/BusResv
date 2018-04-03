@@ -234,7 +234,7 @@ define(["utils","settings"], function (utils,settings) {
                     cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom cardresponsepayload"  onClick="window.open('http://localhost:3000/"${data.payload.buttons[j].url}"','chat70994705','width=400,height=600,resizable=yes');$('.cardresponsepayload').hide();return false;" >${data.payload.buttons[j].title}</button>`
                   }
                   else{
-                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom"  onClick="window.open('https://fast-reef-26757.herokuapp.com/${data.payload.buttons[j].url}','chat70994705','width=400,height=600,resizable=yes');$('.cardresponsepayload').hide();return false;" >${data.payload.buttons[j].title}</button>`
+                    cardButtons += `<button type="button"  class="btn btn-primary infocard-btn-custom webview"  onClick="window.open('https://fast-reef-26757.herokuapp.com/${data.payload.buttons[j].url}','chat70994705','width=400,height=600,resizable=yes');$('.webview').hide();return false;" >${data.payload.buttons[j].title}</button>`
                   }
 
                 }
