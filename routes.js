@@ -141,7 +141,7 @@ var bookingSeats = function(req){
 						"type": "template",
 						"payload": {
 						  "template_type": "button",
-						  "text": "Click below button to view details",
+						  "text": "Click view button to get seat booking page",
 						  "buttons": [{
 							  "type": "web_url",
 							  //"url": "https://limitless-lake-62312.herokuapp.com/index.html",
