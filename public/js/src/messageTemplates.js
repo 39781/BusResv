@@ -115,7 +115,7 @@ define(["utils","settings"], function (utils,settings) {
                     }
                 }
             }
-        }
+        }		
         quickRepliesHtml += `</div><p class="bot-res-timestamp-qr"><small> <img style="border-radius:50%;border:2px solid white;" width="20" height="20" src='${settings.botAvatar}'/>${data.time}</small></p></div></li>`
         return quickRepliesHtml;
     }
