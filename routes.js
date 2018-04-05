@@ -92,7 +92,7 @@ router.get('/testtxn', function(req,res){
 });
 
 
-router.post('/paytmtxn',function(req, res) {
+router.post('/paytmTxn',function(req, res) {
 	console.log("POST Order start");
 	console.log(req.body);
 	saveBookingInfo(req.body)

@@ -201,6 +201,40 @@
 					//$('#place').hide();
 				//alert(str.join(','));
 			});
+			$('#paytmPay').click(function () {
+				var str = [], item;
+				$.each($('#place td.' + settings.selectingSeatCss + ' a'), function (index, value) {
+					item = $(this).attr('title');                   
+					str.push(item);                   
+				});
+				var dataObj = {
+					name : $('#name').html(),
+					phone : $('#phno').html(),
+					source: $('#from').html(),
+					date :$('#date').html(),
+					dest : $('#to').html(),
+					fare : $('#fare').html(),
+					totTics : $('#totTicks').html(),
+					tcost : $('#tcost').html(),
+					bustype:$('#bustype').html(),
+					bookedSeats:str
+				}			
+				$.ajax({
+					type: "POST",
+					url: "/paytmTxn",
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",				
+					data: JSON.stringify(dataObj),
+					success: function(response) {
+						console.log(response);
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});			
+					//$('#place').hide();
+				//alert(str.join(','));
+			});
 			$('.firstfour').change(function() {
 				$('.cardImg').removeClass('active');
 				var card = $('.firstfour').val();
