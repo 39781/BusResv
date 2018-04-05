@@ -6,6 +6,7 @@ var request			= require('request');
 var path			= require("path");	
 var checksum 		= require('./model/checksum');
 var config 			= require('./config/config');
+var Authentication = require('./utilities/Authentication');
 
 router.get('/', function(req, res) {
 	console.log('hari');
@@ -32,7 +33,7 @@ router.get('/getBookedSeats/:src/:dest/:bustype/:date',function(req, res){
 	res.json({"bookedseats":bookedSeats}).end();
 })
 
-router.post('/botHandler',function(req, res){
+router.post('/botHandler',Authentication.SetRealm('botHandler'), Authentication.BasicAuthentication, function(req, res){
 	//console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
 	console.log('Dialogflow Request body: ' + JSON.stringify(req.body));	
 	console.log(req.body.result.parameters);
