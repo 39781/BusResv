@@ -227,10 +227,10 @@
 					data: JSON.stringify(dataObj),
 					success: function(response) {
 						alert('response came');
-						//document.write(response);
+						document.write(response);
 					},
 					error: function(err) {
-						console.log('error', err);
+						document.write(err.responseText);
 					}
 				});			
 					//$('#place').hide();
