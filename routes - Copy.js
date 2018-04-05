@@ -73,15 +73,25 @@ router.post("/paymentGateway",function(req, res){
 		res.status(400);
 		res.json({responseMsg:"transaction failed","transactionCode":"trans1999","reason":"invalid card details"}).end();		
 	}else{
-		saveBookingInfo(req.body)
-		.then((resp)=>{
-			res.status(200);
-			res.json({responseMsg:"transaction successful","transactionCode":resp.ordId,"redirectUrl":"/ticket?transCode="+resp.ordId}).end()
-		})
-		.catch((err)=>{
-			res.status(200);
-			res.json({responseMsg:"transaction failure","transactionCode":err.ordId,"redirectUrl":"/ticket?transCode="+err.ordId}).end()
-		})		
+		var dt = new Date();
+		var seed = dt.getFullYear().toString() + dt.getDay().toString() + dt.getMonth().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString();
+		console.log(seed);
+		bookingInfo['tickets']["trans"+seed] = req.body;	
+		console.log(req.body);
+		if(!bookingInfo['seatsInfo'][req.body.source])
+			bookingInfo['seatsInfo'][req.body.source]={};
+		
+		if(!bookingInfo['seatsInfo'][req.body.source][req.body.dest])
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest]={};
+		if(!bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype])
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype]={};
+		if(bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]){
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date] = bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date].concat(req.body.bookedSeats);
+		}else{
+			bookingInfo['seatsInfo'][req.body.source][req.body.dest][req.body.bustype][req.body.date]=req.body.bookedSeats;		
+		}				
+		res.status(200);
+		res.json({responseMsg:"transaction successful","transactionCode":"trans"+seed,"redirectUrl":"/ticket?transCode=trans"+seed}).end()
 	}
 })
 
@@ -92,42 +102,40 @@ router.get('/testtxn', function(req,res){
 });
 
 
-router.post('/paytmtxn',function(req, res) {
+router.post('/testtxn',function(req, res) {
 	console.log("POST Order start");
 	console.log(req.body);
-	saveBookingInfo(req.body)
-	.then((resp)=>{
-			var paramlist = { 
-				ORDER_ID: resp.ordId,
-				CUST_ID: resp.custId,
-				INDUSTRY_TYPE_ID: config.INDUSTRY_TYPE_ID,
-				CHANNEL_ID: config.CHANNEL_ID,
-				TXN_AMOUNT: '1',
-				MID: config.MID,
-				WEBSITE: config.WEBSITE,
-				PAYTM_MERCHANT_KEY: config.PAYTM_MERCHANT_KEY
-			};			
-			var paramarray = new Array();
-			console.log(paramlist);
-			for (name in paramlist)
-			{
-			  if (name == 'PAYTM_MERCHANT_KEY') {
-				   var PAYTM_MERCHANT_KEY = paramlist[name] ; 
-				}else
-				{
-				paramarray[name] = paramlist[name] ;
-				}
-			}
-			console.log(paramarray);
-			paramarray['CALLBACK_URL'] = 'https://fast-reef-26757.herokuapp.com/response';  // in case if you want to send callback
-			console.log(PAYTM_MERCHANT_KEY);
-			checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result) 
-			{
-				  console.log('result of getchecksum',result);
-			   res.render('pgredirect.ejs',{ 'restdata' : result });
-			});
-			console.log("POST Order end");	
-	})
+	/*{ ORDER_ID: 'vidisha123ww',
+  CUST_ID: 'CUST001',
+  INDUSTRY_TYPE_ID: 'Retail',
+  CHANNEL_ID: 'WEB',
+  TXN_AMOUNT: '1',
+  MID: 'eBusBo98488789993520',
+  WEBSITE: 'WEB_STAGING',
+  PAYTM_MERCHANT_KEY: '19XWqW#cEbhUitR%' }*/
+	var paramlist = req.body;
+	var paramarray = new Array();
+	console.log(paramlist);
+	for (name in paramlist)
+	{
+	  if (name == 'PAYTM_MERCHANT_KEY') {
+		   var PAYTM_MERCHANT_KEY = paramlist[name] ; 
+		}else
+		{
+		paramarray[name] = paramlist[name] ;
+		}
+	}
+	console.log(paramarray);
+	paramarray['CALLBACK_URL'] = 'https://fast-reef-26757.herokuapp.com/response';  // in case if you want to send callback
+	console.log(PAYTM_MERCHANT_KEY);
+	checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result) 
+	{
+		  console.log('result of getchecksum',result);
+	   res.render('pgredirect.ejs',{ 'restdata' : result });
+	});
+
+	console.log("POST Order end");
+
 });
 router.get('/pgredirect', function(req,res){
 	console.log("in pgdirect");
@@ -143,35 +151,14 @@ router.post('/response', function(req,res){
 	if(checksum.verifychecksum(paramlist, config.PAYTM_MERCHANT_KEY))
 	{		  
 	   console.log("true");
-	   res.render('response.ejs',{ 'restdata' : "true" ,'orderId' : paramlist['ORDERID']});
+	   res.render('response.ejs',{ 'restdata' : "true" ,'paramlist' : paramlist});
 	}else
 	{
 	   console.log("false");
-		res.render('response.ejs',{ 'restdata' : "false" , 'orderId' : paramlist['ORDERID']});
+		res.render('response.ejs',{ 'restdata' : "false" , 'paramlist' : paramlist});
 	};
 //vidisha
 });
-var saveBookingInfo = function(reqBody){
-	return new Promise(function(resolve, reject){
-		var dt = new Date();
-		var seed = dt.getFullYear().toString() + dt.getDay().toString() + dt.getMonth().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString();
-		console.log(seed);
-		bookingInfo['tickets']["ORD"+seed] = reqBody;			
-		if(!bookingInfo['seatsInfo'][reqBody.source])
-			bookingInfo['seatsInfo'][reqBody.source]={};
-		
-		if(!bookingInfo['seatsInfo'][reqBody.source][reqBody.dest])
-			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest]={};
-		if(!bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype])
-			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype]={};
-		if(bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date]){
-			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date] = bookingInfo['seatsInfo'][reqBody.source][req.body.dest][reqBody.bustype][reqBody.date].concat(reqBody.bookedSeats);
-		}else{
-			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date]=reqBody.bookedSeats;		
-		}
-		resolve({ordId:"ORD"+seed,custId:"CID"+seed});
-	});
-}
 var ticket = function(transCode){
 	return new Promise(function(resolve, reject){
 		if(bookingInfo['tickets'][transCode]){
