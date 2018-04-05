@@ -4,7 +4,7 @@ exports.BasicAuthentication = function(request, response, next) {
 
     function unauthorized(response) {
         response.set('WWW-Authenticate', 'Basic realm=' + request.authRealm);
-        return response.send(401);
+        return response.sendStatus(401);
     };
 
     var user = basicAuth(request);
