@@ -27,7 +27,6 @@ function($, config, utils, messageTpl, cards, uuidv1){
 				"className": 'pull-right'
 			}));
 		}
-
 		askBot(userInput, callback){
 			this.userSays(userInput, callback);
 
@@ -67,11 +66,90 @@ function($, config, utils, messageTpl, cards, uuidv1){
 					let buttons;
 					
 					console.log(response);
-					if(response.result.fulfillment.messages){
-					for(let i in response.result.fulfillment.messages){
-						if(response.result.fulfillment.messages[i].type == 0 ){
-							let cardHTML = cards({
-								"payload": response.result.fulfillment.messages[i].speech,
+					if(response.status.code!=200){
+						let cardHTML = cards({
+							"payload": response.status.errorDetails,
+							"senderName": config.botTitle,
+							"senderAvatar": config.botAvatar,
+							"time": utils.currentTime(),
+							"className": ''
+						}, "plaintext");
+						callback(null, cardHTML);
+					}else{
+						if(response.result.fulfillment.messages){
+						for(let i in response.result.fulfillment.messages){
+							if(response.result.fulfillment.messages[i].type == 0 ){
+								let cardHTML = cards({
+									"payload": response.result.fulfillment.messages[i].speech,
+									"senderName": config.botTitle,
+									"senderAvatar": config.botAvatar,
+									"time": utils.currentTime(),
+									"className": ''
+								}, "plaintext");
+								callback(null, cardHTML);
+							}
+							if(response.result.fulfillment.messages[i].type == 1){
+								count = count + 1;
+								hasbutton=(response.result.fulfillment.messages[i].buttons.length > 0) ? true :false;
+								isCardorCarousel = true;           
+							}
+							if(response.result.fulfillment.messages[i].type == 2){
+								isQuickReplyFromApiai = true;
+							}
+							if(response.result.fulfillment.messages[i].type == 3){
+								isImage = true;
+							}
+							if(response.result.fulfillment.messages[i].type == 4){
+								
+								console.log(response.result.fulfillment.messages[i]);
+								//isQuickReply = (response.result.fulfillment.messages[i].payload.facebook.quick_replies.length > 0) ? true : false ;
+								//console.log(isQuickReply);
+								if(response.result.fulfillment.messages[i].payload.facebook.attachment.type=="video" ){
+									isVideo= true  ;
+									videoUrl=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.url;
+									//console.log(videoUrl);
+								}
+								if(response.result.fulfillment.messages[i].payload.facebook.attachment.type=="audio" ){
+								isAudio= true ;
+								audioUrl=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.url;
+								//console.log(audioUrl);
+								}
+								if(response.result.fulfillment.messages[i].payload.facebook.attachment.type=="file" ){
+								isFile=true;
+								fileUrl=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.url;
+								//console.log(fileUrl);
+								}
+								if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=="receipt" ){
+									isReceipt=true;
+								receiptData=response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
+								//console.log(isReceipt);
+								}
+
+								if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=='logout'){
+									isLogOut=true;
+									logoutData=response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
+								console.log(isLogOut);
+								}
+								
+								if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=='login'){
+									login=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.elements;
+									isLogIn=true;	
+								}
+								if(['button','generic'].indexOf(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type)>=0){		
+									console.log(JSON.stringify(response));
+									buttons=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.buttons;
+									for(let l=0; l<buttons.length;l++){
+										if(buttons[l].type == 'web_url'){
+											isWebView = true;
+											webviewData = response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
+										}
+									}								
+								}
+							}
+						}
+					}else{
+						 let cardHTML = cards({
+								"payload": response.result.fulfillment.speech,
 								"senderName": config.botTitle,
 								"senderAvatar": config.botAvatar,
 								"time": utils.currentTime(),
@@ -79,75 +157,6 @@ function($, config, utils, messageTpl, cards, uuidv1){
 							}, "plaintext");
 							callback(null, cardHTML);
 						}
-						if(response.result.fulfillment.messages[i].type == 1){
-							count = count + 1;
-							hasbutton=(response.result.fulfillment.messages[i].buttons.length > 0) ? true :false;
-							isCardorCarousel = true;           
-						}
-						if(response.result.fulfillment.messages[i].type == 2){
-							isQuickReplyFromApiai = true;
-						}
-						if(response.result.fulfillment.messages[i].type == 3){
-							isImage = true;
-						}
-						if(response.result.fulfillment.messages[i].type == 4){
-							
-							console.log(response.result.fulfillment.messages[i]);
-							//isQuickReply = (response.result.fulfillment.messages[i].payload.facebook.quick_replies.length > 0) ? true : false ;
-							//console.log(isQuickReply);
-							if(response.result.fulfillment.messages[i].payload.facebook.attachment.type=="video" ){
-								isVideo= true  ;
-								videoUrl=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.url;
-								//console.log(videoUrl);
-							}
-							if(response.result.fulfillment.messages[i].payload.facebook.attachment.type=="audio" ){
-							isAudio= true ;
-							audioUrl=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.url;
-							//console.log(audioUrl);
-							}
-							if(response.result.fulfillment.messages[i].payload.facebook.attachment.type=="file" ){
-							isFile=true;
-							fileUrl=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.url;
-							//console.log(fileUrl);
-							}
-							if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=="receipt" ){
-								isReceipt=true;
-							receiptData=response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
-							//console.log(isReceipt);
-							}
-
-							if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=='logout'){
-								isLogOut=true;
-								logoutData=response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
-							console.log(isLogOut);
-							}
-							
-							if(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type=='login'){
-								login=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.elements;
-								isLogIn=true;	
-							}
-							if(['button','generic'].indexOf(response.result.fulfillment.messages[i].payload.facebook.attachment.payload.template_type)>=0){		
-								console.log(JSON.stringify(response));
-								buttons=response.result.fulfillment.messages[i].payload.facebook.attachment.payload.buttons;
-								for(let l=0; l<buttons.length;l++){
-									if(buttons[l].type == 'web_url'){
-										isWebView = true;
-										webviewData = response.result.fulfillment.messages[i].payload.facebook.attachment.payload;
-									}
-								}								
-							}
-						}
-					}
-				}
-				else{
-					 let cardHTML = cards({
-							"payload": response.result.fulfillment.speech,
-							"senderName": config.botTitle,
-							"senderAvatar": config.botAvatar,
-							"time": utils.currentTime(),
-							"className": ''
-						}, "plaintext");
-						callback(null, cardHTML);
 					}
 					//Carousel
 					if(isCardorCarousel){
