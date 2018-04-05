@@ -124,7 +124,7 @@ router.post('/paytmTxn',function(req, res) {
 			checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result) 
 			{
 				  console.log('result of getchecksum',result);
-			   res.render('pgredirect.ejs',{ 'restdata' : result });
+				  res.render('pgredirect.ejs',{ 'restdata' : result });
 			});
 			console.log("POST Order end");	
 	})
