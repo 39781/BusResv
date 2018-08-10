@@ -126,7 +126,7 @@ router.post('/testtxn',function(req, res) {
 		}
 	}
 	console.log(paramarray);
-	paramarray['CALLBACK_URL'] = 'https://fast-reef-26757.herokuapp.com/response';  // in case if you want to send callback
+	paramarray['CALLBACK_URL'] = 'https://stark-ocean-67616.herokuapp.com/response';  // in case if you want to send callback
 	console.log(PAYTM_MERCHANT_KEY);
 	checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result) 
 	{
