@@ -166,7 +166,7 @@ var saveBookingInfo = function(reqBody){
 		if(!bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype])
 			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype]={};
 		if(bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date]){
-			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date] = bookingInfo['seatsInfo'][reqBody.source][req.body.dest][reqBody.bustype][reqBody.date].concat(reqBody.bookedSeats);
+			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date] = bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date].concat(reqBody.bookedSeats);
 		}else{
 			bookingInfo['seatsInfo'][reqBody.source][reqBody.dest][reqBody.bustype][reqBody.date]=reqBody.bookedSeats;		
 		}
