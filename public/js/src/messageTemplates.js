@@ -209,6 +209,38 @@ define(["utils","settings"], function (utils,settings) {
 
         return carousel;
     }
+	
+   methods.list = (data) => {
+	console.log('in list method',data);
+        let html = '';
+
+        let listBody = '<li class="list-group-item background-color-custom animated fadeInLeft">';
+        for (let i in data.payload) {
+
+            listBody += `<ul class="list-group pmd-z-depth pmd-list pmd-card-list">`;
+
+            for (let j = 0; j < data.payload[i].payload.facebook.attachment.payload.elements.length; j++) {
+
+                listBody += `<li class="list-group-item">
+    
+        <a href="#"  class="listresponsepayload"  data = "${data.payload[i].payload.facebook.attachment.payload.elements[j].hasOwnProperty('buttons') ? data.payload[i].payload.facebook.attachment.payload.elements[j].buttons[0].payload : ''}" style="display:block;">
+        <div class="media-body">
+        <div class="col-xs-9">
+            <h3 class="list-group-item-heading">${data.payload[i].payload.facebook.attachment.payload.elements[j].title}</h3>
+            <span class="list-group-item-text">${data.payload[i].payload.facebook.attachment.payload.elements[j].subtitle}</span>	
+            </div>
+            <div class="col-xs-3">
+            <img src="${data.payload[i].payload.facebook.attachment.payload.elements[j].image_url}" width="100" height="100" class="img-responsive">
+            </div>
+         </div>
+         </a>
+         
+    </li>`;
+            }
+            html += `</ul><p class="bot-res-timestamp-qr"><small> <img style="border-radius:50%;border:2px solid white;" width="20" height="20" src='${settings.botAvatar}'/>${data.time}</small></p></li>`;
+        }
+        return listBody + html;
+    }
 	methods.webview=(data, uniqueId)=>{
 
         let html;
